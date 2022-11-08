@@ -1,4 +1,4 @@
-# All phrases that are prepared to be choosed
+# All phrases that are prepared to be chosen
 phrase = ["Rosebud", "Less is more", "Inconceivable!", "Never going to give you up",
           "The unexamined life is not worth living",
           "My name is Inigo Montoya, you killed my father, prepare to die!"]
@@ -15,15 +15,18 @@ def choose_phrase():
 def cover_phrase(phrase):
     new_phrase = []
     for index in range(len(phrase)):
-        if phrase[index] == '!':
-            new_phrase.append('!')
-        elif phrase[index] == ',':
-            new_phrase.append(',')
-        elif phrase[index] != ' ':
-            new_phrase.append('_')
+        if phrase[index] in ['!', ',', ' ']:
+            new_phrase.append(phrase[index])
         else:
-            new_phrase.append(' ')
+            new_phrase.append('_')
     return new_phrase
+
+
+def get_str_from_list(list):
+    str = ''
+    for ch in list:
+        str += ch
+    return str
 
 
 # Update answer
@@ -36,24 +39,15 @@ def update_covered_phrase(game_phrase, new_phrase, ch):
     return count
 
 
-def convert(list):
-    str = ''
-    for ch in list:
-        str += ch
-    return str
-
-
-def print_multi_lines(phrase):
-    if len(phrase) > 39:
-        print(phrase[0:25])
-        print(phrase[26:47])
-        print(phrase[48:])
-    elif len(phrase) == 39:
-        print(phrase[0:19])
-        print(phrase[20:])
-    else:
-        print(phrase)
-
+def print_covered_phrase(phrase, length):
+    phrase_length = len(phrase)
+    for r in range(int(phrase_length/length) + 1):
+        str = ''
+        for i in range (length):
+            if (r * length + i >= phrase_length):
+                break;
+            str += phrase[length * r + i]
+        print(str)
 
 # Count how many times the letter shows in this phrase
 def user_choose(letter, count_num, total, user_vowel = 'True'):
@@ -61,19 +55,19 @@ def user_choose(letter, count_num, total, user_vowel = 'True'):
         if count_num == 0:
             total -= 100
             print(f"There are no {letter}'s.")
-            print_multi_lines(convert(covered_phrase))
+            print_covered_phrase(covered_phrase, 14)
             print(f'You have ${total}')
         
         else:
             total += count_num * 50
             print(f"There are {count_num} {letter}'s.")
-            print_multi_lines(convert(covered_phrase))
+            print_covered_phrase(covered_phrase, 14)
             print(f'You have ${total}')
 
     else:
         total -= 50
         print(f"There are {count_num} {letter}'s.")
-        print_multi_lines(convert(covered_phrase))
+        print_covered_phrase(covered_phrase, 14)
         print(f'You have ${total}')
         
     return total
@@ -94,10 +88,10 @@ print('Welcome to Wheel of Fortune! Enter a number to begin the game.')
 total_money = 200
 chosen_phrase = choose_phrase()
 covered_phrase = cover_phrase(chosen_phrase)
-print_multi_lines(convert(covered_phrase))
+print_covered_phrase(covered_phrase, 14)
 print(f'You have ${total_money}')
 
-while total_money > 0 and chosen_phrase != convert(covered_phrase):
+while total_money > 0 and chosen_phrase != get_str_from_list(covered_phrase):
     
     # Guess or buy a vowel
     print("Guess a letter ('g') or buy a vowel ('v')? ", end='')
